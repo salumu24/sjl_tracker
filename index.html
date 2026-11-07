@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Location Tracker</title>
+</head>
+<body>
+    <h2>Inasoma eneo la kifaa na kulihifadhi...</h2>
+    <p id="hali">Tafadhali subiri...</p>
+
+    <script>
+        function tumaEneo(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const mzigo = {
+                device: 1,
+                latitude: lat,
+                longitude: lon
+            };
+
+            fetch('http://127.0.0.1:8000/api/location/update/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(mzigo)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('hali').innerText = "Eneo limetumwa na kuhifadhiwa vizuri!";
+            })
+            .catch(err => {
+                document.getElementById('hali').innerText = "Imeshindikana kutuma.";
+            });
+        }
+
+        if (navigator.geolocation) {
+            // Inasoma eneo moja kwa moja (automatic) bila mtumiaji kugusa chochote
+            navigator.geolocation.getCurrentPosition(tumaEneo);
+        } else {
+            document.getElementById('hali').innerText = "Geolocation haitumiki kwenye kifaa hiki.";
+        }
+    </script>
+</body>
+</html>

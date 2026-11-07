@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>SJL Tracker - Ramani</title>
+    <!-- CSS ya Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; background-color: #f4f4f9; }
+        #map { height: 450px; width: 85%; margin: 20px auto; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.2); }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-bottom: 10px; }
+        button:hover { background-color: #0056b3; }
+        #status { font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+    <h2>Ufuatiliaji wa Eneo la Simu Kwenye Ramani</h2>
+    <button onclick="tumaEneoSasa()">Sasisha Eneo Langu Sasa</button>
+    <p id="status">Subiri...</p>
+    
+    <!-- Hapa ndipo ramani itakapokaa -->
+    <div id="map"></div>
+
+    <!-- JavaScript ya Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Kuchukua data za mwisho kutoka Django backend
+        {% if location %}
+            var lat = {{ location.latitude }};
+            var lon = {{ location.longitude }};
+        {% else %}
+            var lat = -6.7924; // Default kama hakuna bado (Mfano: Dar es Salaam)
+            var lon = 39.2083;
+        {% endif %}
+
+        // Kuunda ramani
+        var map = L.map('map').setView([lat, lon], 15);
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, and the GIS User Community'
+}).addTo(map);
+
+        var marker = L.marker([lat, lon]).addTo(map);
+        marker.bindPopup("<b>Simu ipo hapa!</b><br>Lat: " + lat + "<br>Lon: " + lon).openPopup();
+
+        // Kazi ya kusoma eneo jipya la GPS na kulituma kwenye API
+        function tumaEneoSasa() {
+            const statusText = document.getElementById("status");
+
+            if (navigator.geolocation) {
+                statusText.innerText = "Inatafuta eneo la GPS...";
+                
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latVal = position.coords.latitude;
+                    const lonVal = position.coords.longitude;
+                    const accVal = position.coords.accuracy;
+
+                    const mzigoData = {
+                        device: 1, // Badilisha kulingana na ID ya kifaa chako
+                        latitude: latVal,
+                        longitude: lonVal,
+                        accuracy: accVal
+                    };
+
+                    fetch('/api/location/update/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(mzigoData)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            statusText.innerText = "Eneo limetumwa kikamilifu! Pakia tena ukurasa kuona ramani mpya.";
+                            statusText.style.color = "green";
+                            location.reload(); // Pakia upya ukurasa ili ramani ijichore upya
+                        } else {
+                            throw new Error("Imeshindikana kuhifadhi.");
+                        }
+                    })
+                    .catch(error => {
+                        statusText.innerText = "Hitilafu katika kutuma eneo.";
+                        statusText.style.color = "red";
+                    });
+
+                }, function(error) {
+                    statusText.innerText = "Ruhusa ya eneo imekataliwa au haipatikani.";
+                    statusText.style.color = "red";
+                }, { enableHighAccuracy: true });
+            } else {
+                statusText.innerText = "Kivinjari hakihimili Geolocation.";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
+
