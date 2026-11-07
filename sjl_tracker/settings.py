@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*p2yku^3i*2)ngi%h-(20baotzh1sk(8^gn5k2s$dr89*=2)q1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['sjl-tracker-2.onrender.com','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['sjl-tracker.onrender.com','localhost','127.0.0.1']
 
 
 # Application definition
