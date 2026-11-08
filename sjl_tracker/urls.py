@@ -14,12 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from tracker import views
 from django.contrib import admin
+<<<<<<< Updated upstream
 from django.urls import path, include
+=======
+from django.urls import path,include
+>>>>>>> Stashed changes
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+<<<<<<< Updated upstream
     path('location/', include('tracker.urls')),
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
+=======
+    path('tracker/', include('tracker.urls')),
+    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    path('api/location/update/',views.DeviceLocationCreateAPIView.as_view(), name='location_update'),
+>>>>>>> Stashed changes
 ]

@@ -56,7 +56,11 @@ ROOT_URLCONF = 'sjl_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+<<<<<<< Updated upstream
         'DIRS': [BASE_DIR /'template'],
+=======
+        'DIRS': [BASE_DIR / 'templates'],
+>>>>>>> Stashed changes
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
