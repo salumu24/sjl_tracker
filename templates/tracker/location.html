@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SJL Tracker - Mfumo wa Kutafuta Simu Iliyopotea</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; text-align: center; margin-top: 40px; }
+        .box { background-color: white; padding: 30px; display: inline-block; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; }
+        input[type="text"] { padding: 10px; width: 70%; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .result { margin-top: 20px; text-align: left; background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 5px solid #007bff; }
+        .error { color: red; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Utafutaji wa Simu Iliyopotea</h2>
+        
+        <!-- Fomu ya kuingiza jina la kifaa -->
+        <form method="GET" action="">
+            <input type="text" name="device_name" value="{{ query }}" placeholder="Weka jina la kifaa (mf. Simu_Ya_Juma)" required>
+            <button type="submit">Tafuta</button>
+        </form>
+
+        {% if query %}
+            {% if location %}
+                <div class="result">
+                    <h3 style="color: #007bff; margin-top: 0;">📱 Taarifa za Kifaa: {{ location.device }}</h3>
+                    <hr>
+                    <p><strong>Taifa:</strong> {{ location.taifa|default:"Haijawekwa" }}</p>
+                    <p><strong>Mkoa:</strong> {{ location.mkoa|default:"Haijawekwa" }}</p>
+                    <p><strong>Wilaya:</strong> {{ location.wilaya|default:"Haijawekwa" }}</p>
+                    <p><strong>Kata:</strong> {{ location.kata|default:"Haijawekwa" }}</p>
+                    <p><strong>Mtaa:</strong> {{ location.mtaa|default:"Haijawekwa" }}</p>
+                    <hr>
+                    <p><small><strong>Latitude:</strong> {{ location.latitude }}</small></p>
+                    <p><small><strong>Longitude:</strong> {{ location.longitude }}</small></p>
+                    <p><small><strong>Mwisho Kuonekana:</strong> {{ location.timestamp }}</small></p>
+                </div>
+            {% else %}
+                <p class="error">Hakuna taarifa zilizopatikana kwa kifaa chenye jina "<strong>{{ query }}</strong>". Hakikisha kimeshatuma data.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

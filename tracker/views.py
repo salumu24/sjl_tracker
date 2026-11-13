@@ -1,25 +1,22 @@
+from rest_framework import generics, permissions
 from django.shortcuts import render
-from django.http import HttpResponse
-from rest_framework import generics
-from rest_framework.authentication import SessionAuthentication
 from .models import DeviceLocation
 from .serializers import DeviceLocationSerializer
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        return  # Hii inazima ukaguzi wa CSRF kwenye DRF
-
-def home(request):
-    return HttpResponse("Welcome to SJL tracker")
-
-def device_location(request):
-    latest_location = DeviceLocation.objects.last()
-    context = {
-        'location': latest_location
-    }
-    return render(request, 'tracker/location.html', context)
 
 class DeviceLocationCreateAPIView(generics.CreateAPIView):
     queryset = DeviceLocation.objects.all()
     serializer_class = DeviceLocationSerializer
-    authentication_classes = [CsrfExemptSessionAuthentication]
+    permission_classes = [permissions.AllowAny]  # Hapa iwe permissions (yenye s)
+
+def device_location(request):
+    query = request.GET.get('device_name', '')
+    location = None
+    
+    if query:
+        location = DeviceLocation.objects.filter(device__icontains=query).order_by('-timestamp').first()
+        
+    context = {
+        'location': location,
+        'query': query
+    }
+    return render(request, 'tracker/location.html', context)

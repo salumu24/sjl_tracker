@@ -26,35 +26,20 @@ class Device(models.Model):
     def _str_(self):
         return self.device_name
 
+
 class DeviceLocation(models.Model):
-    device = models.ForeignKey(
-        Device,
-        on_delete=models.CASCADE,
-        related_name='locations'
-    )
-    latitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
-        validators=[
-            MinValueValidator(-90),
-            MaxValueValidator(90),
-        ]
-    )
-    longitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
-        validators=[
-            MinValueValidator(-180),
-            MaxValueValidator(180),
-        ]
-    )
-    accuracy = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        null=True,
-        blank=True
-    )
-    recorded_at = models.DateTimeField(auto_now_add=True)
+    device = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    
+    # Sehemu mpya za eneo la kijiografia
+    taifa = models.CharField(max_length=100, blank=True, null=True)
+    mkoa = models.CharField(max_length=100, blank=True, null=True)
+    wilaya = models.CharField(max_length=100, blank=True, null=True)
+    kata = models.CharField(max_length=100, blank=True, null=True)
+    mtaa = models.CharField(max_length=100, blank=True, null=True)
+    
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def _str_(self):
-        return f"{self.device.device_name} - {self.recorded_at}"
+        return f"{self.device} - {self.mkoa}, {self.wilaya}"

@@ -4,4 +4,4 @@ from .models import DeviceLocation
 class DeviceLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeviceLocation
-        fields = ['device', 'latitude', 'longitude', 'accuracy', 'recorded_at']
+        fields = '__all__'
